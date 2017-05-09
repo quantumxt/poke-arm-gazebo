@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Var -->
+  <xacro:property name="PI" value="3.14159"/>
+  <xacro:property name="rb" value="0.05" />        <!-- Cylinder Radius Base -->
+  <xacro:property name="r0" value="0.03" />        <!-- Cylinder Radius -->
+  <xacro:property name="l0" value="0.05" />        <!-- Cylinder Length Base-->
+  <xacro:property name="jr" value="${1.5*r0}" />   <!-- Joint cylinder Radius -->
+  <xacro:property name="l1" value="0.2" />         <!-- Cylinder Length Primary-->
+  <xacro:property name="l2" value="0.1" />         <!-- Cylinder Length Secondary-->
+  <xacro:property name="mass" value="1e-2" />       <!-- arbitrary value for mass -->
+
+  <xacro:property name="cam_name" value="cameraB"/>
+
+  <!-- Imports -->
+  <!-- Get parts from the hardware xacro file -->
+  <xacro:include filename="$(find poke_description)/urdf/poke_hardware.xacro"/>
+  <!-- Gazebo settings -->
+  <xacro:include filename="$(find poke_description)/urdf/poke.gazebo"/>
+
+
+  <material name="white">
+    <color rgba="0.87 0.90 0.87 1.0"/>
+   </material>
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+   </material>
+  <material name="green">
+    <color rgba="0.22 0.32 0.14 1.0"/>
+   </material>
+  <material name="grey">
+     <color rgba="0.2 0.2 0.2 1.0"/>
+   </material>
+  <material name="orange">
+     <color rgba="1.0 ${108/255} ${10/255} 1.0"/>
+   </material>
+
+
+  <xacro:macro name="poke_arm" params="parent color *origin joints_vlimit">
+  <!-- base_link -->
+  <link name="poke_base_link" />
+  <joint name="poke_base_joint" type="fixed">
+    <insert_block name="origin" />
+    <parent link="${parent}"/>
+    <child link="poke_base_link" />
+   </joint>
+
+  <!-- Base mount-->
+  <base_mount parent="poke_base_link" name="baseMount" color="grey">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  </base_mount>
+  <!-- Torso [p0] -->
+  <segmentL parent="baseMount_link" name="p0" color="orange"
+    llimit="-${1/3*PI}" ulimit="${0.48*PI}" vlimit="5">
+    <origin rpy="0 0 0" xyz="0.0 0.0 ${l0+jr}" />
+  </segmentL>
+  <!-- Shoulder [p1] -->
+  <segmentL parent="p0_link" name="p1" color="orange"
+    llimit="0" ulimit="${2/3*PI}" vlimit="5">
+    <origin rpy="0 0 0" xyz="0.0 0.0 ${l1+jr}" />
+  </segmentL>
+  <!-- Arm [p2] -->
+  <segmentS parent="p1_link" name="p2" color="orange"
+    llimit="-${2/3*PI}" ulimit="${2/3*PI}" vlimit="5"/>
+  <!-- Wrist [p3] -->
+  <cSeg parent="p2_link" name="p3" color="green"/>
+
+  <!-- Camera -->
+  <cam parent="p3_link" name="${cam_name}" />
+  <cam_gazebo camName="${cam_name}" />
+
+  <!-- Motor Transmission -->
+  <mtrT jointName="p0_joint"/>
+  <mtrT jointName="p1_joint"/>
+  <mtrT jointName="p2_joint"/>
+  <mtrT jointName="p3_joint"/>
+
+  </xacro:macro>
+</robot>

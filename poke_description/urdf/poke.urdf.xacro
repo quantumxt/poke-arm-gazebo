@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- URDF xacro of the poke arm. Use this file for creation/modification of urdf or moveit config.
+  Use the following command to generate the urdf file:  $ rosrun xacro xacro.py poke_old.xacro -o poke.urdf
+                                    To check the urdf:  $ check_urdf poke.urdf
+                                   Export urdf to pdf:  $ urdf_to_graphiz poke.urdf
+-->
+<robot name="poke_arm_main" xmlns:xacro="http://ros.org/wiki/xacro"
+    xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+
+    <!-- Included URDF Files -->
+    <xacro:include filename="$(find poke_description)/urdf/poke.xacro" />
+
+    <!--
+    For simulating only the arm, we'll use "world" as the link name.
+    For using it on the turtlebot, use "base_link" as the link name.
+    -->
+
+    <!-- As we don't have here a turtlebot, add a base_link link as its location reference -->
+    <link name="world"/>
+
+    <!-- Poke arm macro: we can configure joints velocity limit -->
+    <poke_arm parent="world" color="white" joints_vlimit="1.571">
+      <!-- Place the "floating" arm at the location it should be if mounted on a turtlebot -->
+      <!-- origin xyz="0.1 0.03 0.435"/-->
+      <origin xyz="0 0 0"/>
+    </poke_arm>
+</robot>

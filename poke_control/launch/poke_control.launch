@@ -1,0 +1,21 @@
+<launch>
+ <!-- Publish this for testing the controller:
+  Ready position: $ rostopic pub /arm_controller/command trajectory_msgs/JointTrajectory '{joint_names: ["p0_joint","p1_joint","p2_joint","p3_joint"], points: [{positions: [-1.2,2.5,0.6,0.0],time_from_start:[1.0,0.0]}]}' -1
+  Push: $ rostopic pub /arm_controller/command trajectory_msgs/JointTrajectory '{joint_names: ["p0_joint","p1_joint","p2_joint","p3_joint"], points: [{positions: [1.2,0.2,0.6,0.0],time_from_start:[1.0,0.0]}]}' -1
+  -->
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find poke_control)/config/poke_control.yaml" command="load"/>
+
+  <!--Gazebo launch-->
+  <include file="$(find poke_gazebo)/launch/poke_world.launch"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" args="arm_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+  </node>
+
+</launch>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot>
+   <!-- ros_control plugin -->
+   <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+         <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      </plugin>
+   </gazebo>
+   <gazebo>
+      <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+         <jointName>p0_joint, p1_joint, p2_joint, p3_joint</jointName>
+      </plugin>
+   </gazebo>
+   <!-- Gazebo colors -->
+   <gazebo reference="baseMount">
+      <material>Gazebo/Grey</material>
+   </gazebo>
+   <gazebo reference="p0">
+      <material>Gazebo/Orange</material>
+   </gazebo>
+   <gazebo reference="p1">
+      <material>Gazebo/Orange</material>
+   </gazebo>
+   <gazebo reference="p2">
+      <material>Gazebo/Orange</material>
+   </gazebo>
+   <gazebo reference="p3">
+      <material>Gazebo/Green</material>
+   </gazebo>
+</robot>

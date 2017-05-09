@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+   <!-- macro for arm base mount -->
+   <xacro:macro name="base_mount" params="parent name color *origin">
+      <joint name="${name}_joint" type="fixed">
+         <insert_block name="origin" />
+         <parent link="${parent}" />
+         <child link="${name}_link" />
+      </joint>
+      <link name="${name}_link">
+         <inertial>
+            <mass value="${mass}" />
+            <origin xyz="0 0 ${l0/2}" />
+            <inertia ixx="${mass/1e2}" ixy="0" ixz="0" iyy="${mass/1e2}" iyz="0" izz="${mass/1e2}" />
+         </inertial>
+         <visual>
+            <origin xyz="0 0 ${l0/2}" />
+            <geometry>
+               <cylinder length="${l0}" radius="${rb}" />
+            </geometry>
+            <material name="${color}" />
+         </visual>
+         <collision>
+            <origin xyz="0 0 ${l0/2}" />
+            <geometry>
+               <cylinder length="${l0}" radius="${rb}" />
+            </geometry>
+         </collision>
+      </link>
+   </xacro:macro>
+   <!-- macro for one segment, long -->
+   <xacro:macro name="segmentL" params="parent name color llimit ulimit vlimit *origin">
+      <joint name="${name}_joint" type="revolute">
+         <insert_block name="origin" />
+         <parent link="${parent}" />
+         <child link="${name}_link" />
+         <axis xyz="0 1 0" />
+         <limit lower="${llimit}" upper="${ulimit}" velocity="${vlimit}" effort="30" />
+         <!--origin rpy="0 0 0" xyz="0.0 0.0 ${l1+jr}" /-->
+      </joint>
+      <link name="${name}_link">
+         <inertial>
+            <mass value="${mass}" />
+            <origin rpy="0 0 0" xyz="0 0 ${l1/2}" />
+            <inertia ixx="${mass/1e2}" ixy="0" ixz="0" iyy="${mass/1e2}" iyz="0" izz="${mass/1e2}" />
+            <origin rpy="0 0 0" xyz="0 0 ${l1/2}" />
+         </inertial>
+         <!-- Visual for segment joint -->
+         <visual name="${name}_joint_v">
+            <geometry>
+               <cylinder length="${2*r0}" radius="${jr}" />
+            </geometry>
+            <origin rpy="${PI/2} 0 0" xyz="0 0 0" />
+            <material name="${color}" />
+         </visual>
+         <collision name="${name}_joint_c">
+            <geometry>
+               <cylinder length="${2*r0}" radius="${jr}" />
+            </geometry>
+            <origin rpy="${PI/2} 0 0" xyz="0 0 0" />
+         </collision>
+         <!-- Visual for main segment -->
+         <visual name="${name}_segmentL_v">
+            <geometry>
+               <cylinder length="${l1}" radius="${r0}" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 ${l1/2}" />
+            <material name="${color}" />
+         </visual>
+         <collision name="${name}_segmentL_c">
+            <geometry>
+               <cylinder length="${l1}" radius="${r0}" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 ${l1/2}" />
+         </collision>
+      </link>
+   </xacro:macro>
+   <!-- macro for one segment, short -->
+   <xacro:macro name="segmentS" params="parent name color llimit ulimit vlimit">
+      <joint name="${name}_joint" type="revolute">
+         <parent link="${parent}" />
+         <child link="${name}_link" />
+         <axis xyz="0 1 0" />
+         <limit lower="${llimit}" upper="${ulimit}" velocity="${vlimit}" effort="30" />
+         <origin rpy="0 0 0" xyz="0.0 0.0 ${l1+jr}" />
+      </joint>
+      <link name="${name}_link">
+         <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="${mass/1e2}" ixy="0" ixz="0" iyy="${mass/1e2}" iyz="0" izz="${mass/1e2}" />
+            <origin rpy="0 0 0" xyz="0 0 ${l2/2}" />
+         </inertial>
+         <!-- Visual for segment joint -->
+         <visual name="${name}_joint_v">
+            <geometry>
+               <cylinder length="${2*r0}" radius="${jr}" />
+            </geometry>
+            <origin rpy="${PI/2} 0 0" xyz="0 0 0" />
+            <material name="${color}" />
+         </visual>
+         <collision name="${name}_joint_c">
+            <geometry>
+               <cylinder length="${2*r0}" radius="${jr}" />
+            </geometry>
+            <origin rpy="${PI/2} 0 0" xyz="0 0 0" />
+         </collision>
+         <!-- Visual for main segment -->
+         <visual name="${name}_segmentS_v">
+            <geometry>
+               <cylinder length="${l2}" radius="${r0}" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 ${l2/2}" />
+            <material name="${color}" />
+         </visual>
+         <collision name="${name}_segmentS_c">
+            <geometry>
+               <cylinder length="${l2}" radius="${r0}" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 ${l2/2}" />
+         </collision>
+      </link>
+   </xacro:macro>
+   <!-- macro for continuous segment -->
+   <xacro:macro name="cSeg" params="parent name color">
+      <joint name="${name}_joint" type="continuous">
+         <axis xyz="0 0 1" />
+         <parent link="${parent}" />
+         <child link="${name}_link" />
+         <origin rpy="0 0 0" xyz="0.0 0.0 ${l2+jr/2}" />
+      </joint>
+      <link name="${name}_link">
+         <inertial>
+            <mass value="${mass}" />
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <inertia ixx="${mass/1e2}" ixy="0" ixz="0" iyy="${mass/1e2}" iyz="0" izz="${mass/1e2}" />
+         </inertial>
+         <!-- Visual for segment -->
+         <visual name="${name}_cSeg_v">
+            <geometry>
+               <box size="${jr} ${jr} ${jr}" />
+            </geometry>
+            <material name="${color}" />
+            <origin rpy="0 0 0" xyz="0 0 0" />
+         </visual>
+         <collision name="${name}_cSeg_c">
+            <geometry>
+               <box size="${jr} ${jr} ${jr}" />
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+         </collision>
+      </link>
+   </xacro:macro>
+
+   <xacro:macro name="cam" params="parent name">
+      <!-- Camera joint-->
+      <joint name="${name}_camJoint" type="fixed">
+         <axis xyz="0 0 0" />
+         <!-- Use the joint to orientate the camera -->
+         <origin xyz="0 0 ${.8*jr}" rpy="0 ${-PI/2} 0" />
+         <parent link="${parent}" />
+         <child link="${name}_cam" />
+      </joint>
+      <link name="${name}_cam">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <box size="${jr/2} ${.75*jr} ${jr}" />
+            </geometry>
+            <material name="grey">
+               <color rgba="0.2 0.2 0.2 1.0" />
+            </material>
+         </visual>
+         <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <box size="${jr/2} ${.75*jr} ${jr}" />
+            </geometry>
+         </collision>
+         <inertial>
+            <mass value="0.01" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+         </inertial>
+      </link>
+      <!-- generate an optical frame http://www.ros.org/reps/rep-0103.html#suffix-frames
+      so that ros and opencv can operate on the camera frame correctly -->
+      <joint name="${name}_cam_optical_joint" type="fixed">
+         <!-- these values have to be these values otherwise the gazebo camera image
+        won't be aligned properly with the frame it is supposedly originating from -->
+         <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}" />
+         <parent link="${name}_cam" />
+         <child link="${name}_cam_link_optical" />
+      </joint>
+      <link name="${name}_cam_link_optical" />
+   </xacro:macro>
+
+   <!-- Macro for motor transmission -->
+   <xacro:macro name="mtrT" params="jointName">
+      <transmission name="${jointName}_tran">
+         <type>transmission_interface/SimpleTransmission</type>
+         <joint name="${jointName}">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+         </joint>
+         <actuator name="${jointName}_motor">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+         </actuator>
+      </transmission>
+   </xacro:macro>
+
+   <!-- Macro for camera gazebo setting -->
+   <xacro:macro name="cam_gazebo" params="camName">
+   <gazebo reference="${camName}_cam">
+      <sensor type="depth" name="camera">
+         <always_on>true</always_on>
+         <update_rate>20.0</update_rate>
+         <camera>
+            <horizontal_fov>${60.0*PI/180.0}</horizontal_fov>
+            <image>
+               <format>B8G8R8</format>
+               <width>320</width>
+               <height>240</height>
+            </image>
+            <clip>
+               <near>0.01</near>
+               <!-- <far>8.0</far> -->
+               <far>18.0</far>
+            </clip>
+         </camera>
+         <plugin name="kinect_camera_controller" filename="libgazebo_ros_openni_kinect.so">
+            <cameraName>${camName}</cameraName>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>10</updateRate>
+            <imageTopicName>rgb/image_raw</imageTopicName>
+            <depthImageTopicName>depth/image_raw</depthImageTopicName>
+            <pointCloudTopicName>depth/points</pointCloudTopicName>
+            <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+            <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+            <frameName>${camName}_depth_optical_frame</frameName>
+            <baseline>0.1</baseline>
+            <distortion_k1>0.0</distortion_k1>
+            <distortion_k2>0.0</distortion_k2>
+            <distortion_k3>0.0</distortion_k3>
+            <distortion_t1>0.0</distortion_t1>
+            <distortion_t2>0.0</distortion_t2>
+            <pointCloudCutoff>0.4</pointCloudCutoff>
+         </plugin>
+      </sensor>
+   </gazebo>
+   </xacro:macro>
+
+</robot>

@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: poke_description
+    relative_path: urdf/poke.urdf.xacro
+  SRDF:
+    relative_path: config/poke_arm_main.srdf
+  CONFIG:
+    author_name: Photon
+    author_email: novus.futura@gmail.com
+    generated_timestamp: 1493105506
