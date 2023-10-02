@@ -1,0 +1,1 @@
+cd docker && docker build . -t ros2_pokearm && cd ..
