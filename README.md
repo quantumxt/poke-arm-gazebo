@@ -1,25 +1,62 @@
 # poke-arm-gazebo
 
-An experimental gazebo robotic arm model with 4 movable joints and a depth camera. Designed to be mounted on the Turtlebot gazebo model with only a forward extension capability.
+> WIP Port to ROS2 Humble
+
+An experimental gazebo robotic arm model with 4 movable joints and a depth camera.
 
 ![poke_arm_main](img/pa_main.png)
 
-> Currently, this package is only tested with Ubuntu 14.04 running Gazebo 2.2 & ROS Indigo.
+The simulation would be containerized with docker (Ubuntu 22.04, ROS Humble & Gazebo Garden).
+
+## Prerequistes
+
+> Ensure that a Nvidia GPU driver is installed before proceeding.
+
+Ensure that docker & Nvidia Container toolkit has been installed beforehand.
+
+### Docker
+
+More information on docker installation could be found here: [https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/).
+
+### Nvidia Container toolkit
+
+Configure the repository.
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
+  && \
+    sudo apt-get update
+```
+
+After that, install the NVIDIA Container Toolkit packages:
+```bash
+sudo apt-get install -y nvidia-container-toolkit
+```
 
 ## Installation
-The *poke arm* model depends on the following packages:
-- Gazebo ROS Packages
-- ROS Controllers 
-- MoveIt!
+
+Clone the repository onto your desired location.
 ```bash
-$ sudo apt-get install ros-indigo-gazebo-ros-*
-$ sudo apt-get install ros-indigo-ros-controllers
-$ sudo apt-get install ros-indigo-moveit
+git clone https://github.com/quantumxt/poke-arm-gazebo.git -b ros2
 ```
-After that, git clone the repository to your workspace.
+
+Enter the directory & build the docker image via the `build.sh` script.
 ```bash
-$ git clone https://github.com/1487quantum/poke-arm-gazebo.git
+cd poke-arm-gazebo
+./build.sh
 ```
+
+After the docker image has been build, run `run_docker.sh` to start the container:
+```bash
+./run_docker.sh
+```
+
+> The *poke arm* model depends on the following packages, which would be preinstalled in the docker image:
+> - ROS2 Controllers 
+> - MoveIt!
 
 ## Overview
 ### Joints
@@ -112,3 +149,8 @@ To add the arm, we'll add the *<poke_arm>* into the file. Therefore, the file sh
 ```
 
 And viola! The arm is mounted!
+
+
+## References
+
+- https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
