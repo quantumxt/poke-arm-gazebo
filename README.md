@@ -2,6 +2,8 @@
 
 > WIP Port to ROS2 Humble
 
+[![Docker build](https://img.shields.io/github/actions/workflow/status/quantumxt/poke-arm-gazebo/docker-image.yml?style=for-the-badge)](https://github.com/quantumxt/poke-arm-gazebo/actions)
+
 An experimental gazebo robotic arm model with 4 movable joints and a depth camera.
 
 ![poke_arm_main](img/pa_main.png)
