@@ -15,7 +15,8 @@ RUN add-apt-repository universe
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 RUN apt update && apt upgrade -y
-RUN apt update && apt install -y ros-${ROS_DISTRO}-ros-base ros-${ROS_DISTRO}-rviz2 ros-${ROS_DISTRO}-rqt* ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-moveit* ros-${ROS_DISTRO}-rqt* python3-vcstool python3-colcon-common-extensions
+RUN apt update && apt install -y ros-${ROS_DISTRO}-ros-base ros-${ROS_DISTRO}-rviz2 ros-${ROS_DISTRO}-rqt*
+RUN apt update && apt install -y ros-${ROS_DISTRO}-ros2-controllers ros-${ROS_DISTRO}-moveit python3-vcstool python3-colcon-common-extensions
 
 # Install gazebo garden
 RUN apt update && apt install -y lsb-release wget gnupg

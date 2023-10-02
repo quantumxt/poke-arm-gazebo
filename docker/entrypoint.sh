@@ -2,7 +2,7 @@
 
 set -e
 
-cd /home/user/workspace
+cd /home/ubuntu/workspace
 
 # If no command is provided, set bash to start interactive shell
 if [ -z "$1" ]; then
